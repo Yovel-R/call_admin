@@ -137,19 +137,19 @@ function renderTable(calls) {
         const time = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         return `<tr>
-          <td class="col-number">
+          <td class="col-number" data-label="Phone Number (Caller)">
              ${c.incomingNumber || c.phoneNumber || '—'}
           </td>
-          <td class="col-number" style="font-weight: 500;">
+          <td class="col-number" style="font-weight: 500;" data-label="Service Name">
              ${c.serviceName || 'Unknown'} 
              <div style="font-size:11px; color:var(--muted); font-weight:normal">${c.receivingNumber || ''}</div>
           </td>
-          <td>
+          <td data-label="Count">
              <span style="background:var(--accent-lt);color:var(--accent);padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;">
                  ${c.count || 1}
              </span>
           </td>
-          <td>
+          <td data-label="Timestamp (Recent)">
              <div onclick="showHistory(${index})" style="cursor:pointer; padding:6px; border-radius:6px; background:var(--bg-light); display:inline-block; border:1px solid var(--border-color); transition: border-color 0.2s;" title="Click to view all timestamps">
                  <span style="color:var(--text-main); font-weight:500;">${date}</span>
                  <span style="color:var(--muted);font-size:12px; margin-left:6px;">@ ${time}</span>
@@ -280,6 +280,4 @@ addUserForm.addEventListener('submit', async (e) => {
     }
 });
 
-// ── Initial load + auto-refresh ───────────────────────────────────────────────
 applyFilter();
-setInterval(applyFilter, 30_000);

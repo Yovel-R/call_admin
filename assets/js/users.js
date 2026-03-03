@@ -54,19 +54,19 @@ function renderTable(users) {
             : `<span style="background:#fce8e6;color:#d93025;padding:4px 8px;border-radius:12px;font-size:12px;font-weight:600;">Inactive</span>`;
 
         return `<tr>
-          <td style="font-weight: 500;">
+          <td style="font-weight: 500;" data-label="Service Name">
              ${u.serviceName || '—'}
           </td>
-          <td class="col-number">
+          <td class="col-number" data-label="Phone Number">
              ${u.phoneNumber || '—'}
           </td>
-          <td>
+          <td data-label="Status">
              ${activeBadge}
           </td>
-          <td>
+          <td data-label="Created At">
              <span style="color:var(--text-main); font-size:13px;">${date}</span>
           </td>
-          <td>
+          <td data-label="Actions">
              <button class="btn btn-outline" style="padding: 4px 8px; font-size: 12px;" onclick="toggleStatus('${u._id}', ${u.isActive})">
                 ${u.isActive ? 'Deactivate' : 'Activate'}
              </button>
@@ -162,7 +162,7 @@ const pwdPreview = document.getElementById('generatedPassword');
 function buildPassword(service, phone) {
     const prefix = service.trim().replace(/\s+/g, '').slice(0, 4).toLowerCase();
     const suffix = phone.replace(/\D/g, '').slice(-3);
-    return prefix && suffix ?\`\${prefix}\${suffix}\` : '';
+    return prefix && suffix ? `${prefix}${suffix}` : '';
 }
 
 function updatePreview() {
@@ -197,7 +197,7 @@ addUserForm.addEventListener('submit', async (e) => {
             method: 'POST',
             body: JSON.stringify({ serviceName, phoneNumber, password }),
         });
-        showSuccess(\`✅ "\${serviceName}" created!  Password: \${password}\`);
+        showSuccess(`✅ "${serviceName}" created!  Password: ${password}`);
         addUserForm.reset();
         pwdPreview.value = '';
         // Note: we'll reload users list when the modal is closed
