@@ -8,7 +8,6 @@ const username = localStorage.getItem('admin_username') || 'Admin';
 document.getElementById('navUser').textContent = username;
 document.getElementById('avatarInitial').textContent = username[0].toUpperCase();
 
-// ── Logout ────────────────────────────────────────────────────────────────────
 document.getElementById('logoutBtn').addEventListener('click', () => {
     clearToken();
     location.replace('./login.html');
