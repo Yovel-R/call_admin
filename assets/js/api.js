@@ -1,5 +1,5 @@
 
-const USE_LOCAL = true;
+const USE_LOCAL = false;
 const LOCAL_URL = 'http://192.168.29.212:5001';
 // const LOCAL_URL = 'http://localhost:5001';
 const PROD_URL = 'https://call-backend-fzhj.onrender.com'; // update when deployed
