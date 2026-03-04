@@ -233,6 +233,48 @@ body {
   margin-top: 4px;
 }
 
+/* ── Filter Bar ──────────────────────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+  background: var(--white);
+  padding: 16px 24px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.filter-input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.filter-input:focus {
+  border-color: var(--accent);
+}
+
 /* ── Table card ──────────────────────────────────────────────────────────── */
 .table-card {
   background: var(--white);

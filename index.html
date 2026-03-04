@@ -60,22 +60,40 @@
 
 
 
+                <!-- FILTER BAR -->
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label for="serviceFilter">Service:</label>
+                        <select id="serviceFilter" class="filter-input">
+                            <option value="all">All Services</option>
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="dateFilter">Date:</label>
+                        <select id="dateFilter" class="filter-input">
+                            <option value="all">All Time</option>
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="this_week">This Week</option>
+                            <option value="this_month">This Month</option>
+                            <option value="last_3_months">Last 3 Months</option>
+                            <option value="this_year">This Year</option>
+                            <option value="specific_date">Specific Date</option>
+                        </select>
+                    </div>
+
+                    <div id="specificDateContainer" class="filter-group" style="display: none;">
+                        <input type="date" id="specificDateInput" class="filter-input" style="padding-right: 8px;">
+                    </div>
+                </div>
+
                 <!-- CALL LOG TABLE -->
                 <div class="table-card">
                     <div class="table-header">
                         <h2>Auto-Rejected Calls &nbsp;<span class="badge" id="countBadge">0</span></h2>
                         <div class="table-header-right" style="display:flex; gap:12px; align-items:center;">
-                            <select id="dateFilter" class="input"
-                                style="padding: 6px 12px; height: auto; border-radius: 6px; font-size: 13px; cursor: pointer;">
-                                <option value="all">All Time</option>
-                                <option value="today">Today</option>
-                                <option value="yesterday">Yesterday</option>
-                                <option value="this_week">This Week</option>
-                                <option value="this_month">This Month</option>
-                                <option value="last_3_months">Last 3 Months</option>
-                                <option value="this_year">This Year</option>
-                                <option value="custom" disabled>Custom Range (Setup API)</option>
-                            </select>
                             <button id="exportBtn" class="btn btn-outline"
                                 style="padding: 6px 12px; height: auto; font-size: 13px;">📥 Export Excel</button>
                         </div>

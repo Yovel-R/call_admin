@@ -14,6 +14,38 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     location.replace('./login.html');
 });
 
+// ── Load Users for Filter ───────────────────────────────────────────────────
+async function loadUsersForFilter() {
+    try {
+        const users = await apiFetch('/api/users');
+        console.log("Fetched users:", users);
+        const filterEl = document.getElementById('serviceFilter');
+        if (!filterEl) {
+            console.log("No filterEl found");
+            return;
+        }
+
+        users.forEach(u => {
+            const opt = document.createElement('option');
+            opt.value = u.phoneNumber;
+            opt.textContent = `${u.serviceName} (${u.phoneNumber})`;
+            filterEl.appendChild(opt);
+        });
+
+        // Add event listener when loaded
+        filterEl.addEventListener('change', applyFilter);
+    } catch (err) {
+        console.error('Failed to load users for filter', err);
+        if (err.message.includes('401') || err.message.toLowerCase().includes('token')) {
+            clearToken();
+            location.replace('./login.html');
+        } else {
+            alert('Error loading services: ' + err.message);
+        }
+    }
+}
+loadUsersForFilter();
+
 // ── Load calls ────────────────────────────────────────────────────────────────
 async function loadCalls(query = '') {
     document.getElementById('tableBody').innerHTML = '<div class="loader">Loading…</div>';
@@ -32,15 +64,24 @@ async function loadCalls(query = '') {
 }
 
 function applyFilter() {
-    const filter = document.getElementById('dateFilter') ? document.getElementById('dateFilter').value : 'all';
+    const dateFilter = document.getElementById('dateFilter') ? document.getElementById('dateFilter').value : 'all';
+    const serviceFilter = document.getElementById('serviceFilter') ? document.getElementById('serviceFilter').value : 'all';
 
     let query = '';
     const now = new Date();
 
-    if (filter !== 'all') {
+    const params = new URLSearchParams();
+
+    // 1. Service Filter
+    if (serviceFilter !== 'all') {
+        params.append('receivingNumber', serviceFilter);
+    }
+
+    // 2. Date Filter
+    if (dateFilter !== 'all') {
         let startDate, endDate;
 
-        switch (filter) {
+        switch (dateFilter) {
             case 'today':
                 startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 break;
@@ -63,12 +104,26 @@ function applyFilter() {
             case 'this_year':
                 startDate = new Date(now.getFullYear(), 0, 1);
                 break;
+            case 'specific_date':
+                const specificDateInput = document.getElementById('specificDateInput');
+                if (specificDateInput && specificDateInput.value) {
+                    const selectedDate = new Date(specificDateInput.value);
+                    if (!isNaN(selectedDate.getTime())) {
+                        startDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+                        endDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate() + 1);
+                    }
+                } else {
+                    // If no date is selected yet, just return or fetch empty/all
+                    return;
+                }
+                break;
         }
 
-        const params = new URLSearchParams();
         if (startDate) params.append('startDate', startDate.toISOString());
         if (endDate) params.append('endDate', endDate.toISOString());
+    }
 
+    if (params.toString()) {
         query = `?${params.toString()}`;
     }
 
@@ -76,7 +131,23 @@ function applyFilter() {
 }
 
 if (document.getElementById('dateFilter')) {
-    document.getElementById('dateFilter').addEventListener('change', applyFilter);
+    const dateFilter = document.getElementById('dateFilter');
+    const specificDateContainer = document.getElementById('specificDateContainer');
+    const specificDateInput = document.getElementById('specificDateInput');
+
+    dateFilter.addEventListener('change', (e) => {
+        if (e.target.value === 'specific_date') {
+            specificDateContainer.style.display = 'flex';
+            if (specificDateInput.value) applyFilter();
+        } else {
+            specificDateContainer.style.display = 'none';
+            applyFilter();
+        }
+    });
+
+    if (specificDateInput) {
+        specificDateInput.addEventListener('change', applyFilter);
+    }
 }
 
 if (document.getElementById('exportBtn')) {
@@ -109,8 +180,12 @@ if (document.getElementById('exportBtn')) {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Rejected Calls");
 
         // Download file
-        const filterName = document.getElementById('dateFilter') ? document.getElementById('dateFilter').value : 'all';
-        XLSX.writeFile(workbook, `auto_rejected_calls_${filterName}.xlsx`);
+        const dateFilterName = document.getElementById('dateFilter') ? document.getElementById('dateFilter').value : 'all';
+        const serviceFilterName = document.getElementById('serviceFilter') && document.getElementById('serviceFilter').value !== 'all'
+            ? document.getElementById('serviceFilter').options[document.getElementById('serviceFilter').selectedIndex].text.replace(/[^a-z0-9]/gi, '_').toLowerCase()
+            : 'all_services';
+
+        XLSX.writeFile(workbook, `auto_rejected_${serviceFilterName}_${dateFilterName}.xlsx`);
     });
 }
 
