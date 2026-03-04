@@ -291,7 +291,7 @@ window.showHistory = function (index) {
 
 
 
-document.getElementById('refreshBtn').addEventListener('click', loadCalls);
+document.getElementById('refreshBtn').addEventListener('click', applyFilter);
 
 // ── Add User Modal ────────────────────────────────────────────────────────────
 const modal = document.getElementById('addUserModal');
