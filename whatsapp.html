@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhatsApp Routing · Call AutoTerminate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        .wa-number-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+
+        .wa-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        .wa-pill-remove {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #16a34a;
+            padding: 0;
+            font-size: 13px;
+            line-height: 1;
+        }
+
+        .wa-pill-remove:hover {
+            color: #dc2626;
+        }
+
+        .wa-number-input-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .wa-number-input-row input {
+            flex: 1;
+        }
+
+        .progress-bar-wrap {
+            width: 100%;
+            background: #f3f4f6;
+            border-radius: 20px;
+            height: 6px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #22c55e;
+            border-radius: 20px;
+            transition: width 0.3s;
+        }
+
+        .cycle-info {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .btn-outline {
+            background: var(--white);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-lt);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-shell">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="sidebar-logo-icon"><i class="fa-solid fa-chart-gantt"></i></div>
+                <div>
+                    <div class="sidebar-logo-text">Call AutoTerminate</div>
+                    <div class="sidebar-logo-sub">Admin Panel</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a class="nav-item" href="./index.html">
+                    <span class="nav-icon"><i class="fa-solid fa-tachograph-digital"></i></span> Dashboard
+                </a>
+                <a class="nav-item" href="./users.html">
+                    <span class="nav-icon"><i class="fa-solid fa-users"></i></span> Users
+                </a>
+                <a class="nav-item active" href="./whatsapp.html">
+                    <span class="nav-icon"><i class="fa-brands fa-whatsapp"></i></span> WhatsApp
+                </a>
+            </nav>
+
+            <div class="sidebar-user">
+                <div class="avatar" id="avatarInitial">A</div>
+                <span class="sidebar-username" id="navUser">Admin</span>
+                <button class="btn-icon" id="logoutBtn" title="Sign out">⎋</button>
+            </div>
+        </aside>
+
+        <!-- MAIN -->
+        <div class="main-content">
+
+            <!-- TOPBAR -->
+            <div class="topbar">
+                <h1>WhatsApp Routing</h1>
+                <div class="topbar-actions">
+                    <button class="btn btn-ghost" id="refreshBtn">↻ Refresh</button>
+                    <button class="btn btn-primary" id="openAddBtn">＋ Add Config</button>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="content">
+
+                <div class="table-card">
+                    <div class="table-header">
+                        <h2>WhatsApp Route Configs &nbsp;<span class="badge" id="countBadge">0</span></h2>
+                    </div>
+                    <div id="tableBody">
+                        <div class="loader">Loading…</div>
+                    </div>
+                </div>
+
+            </div><!-- /content -->
+        </div><!-- /main-content -->
+    </div><!-- /app-shell -->
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="modal-backdrop" id="configModal">
+        <div class="modal" style="max-width: 520px;">
+            <h2 id="modalTitle">Add WhatsApp Config</h2>
+            <p>Link a service number to WhatsApp handler numbers with a cycle batch size.</p>
+            <form id="configForm">
+                <input type="hidden" id="editId" />
+
+                <div class="form-group">
+                    <label for="serviceNumber">Service Phone Number</label>
+                    <select id="serviceNumber" required
+                        style="width:100%;border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:var(--text);background:var(--white);outline:none;cursor:pointer;transition:border-color .2s;">
+                        <option value="" disabled selected>Select a service…</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>WhatsApp Handler Numbers</label>
+                    <div class="wa-number-input-row">
+                        <input type="tel" id="waNumberInput" placeholder="10-digit number (e.g. 9876543210)"
+                            autocomplete="off" />
+                        <button type="button" class="btn btn-outline" id="addWaNumberBtn">＋ Add</button>
+                    </div>
+                    <div class="wa-number-list" id="waNumberList"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="cycleCount">Cycle Count (calls per batch)</label>
+                    <input type="number" id="cycleCount" min="1" value="3" required />
+                </div>
+
+                <div class="alert alert-error" id="modalError"></div>
+                <div class="alert alert-success" id="modalSuccess"></div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-ghost" id="closeModalBtn">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="formSubmitBtn">Save Config</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- DELETE CONFIRM MODAL -->
+    <div class="modal-backdrop" id="deleteModal">
+        <div class="modal" style="max-width: 400px;">
+            <h2>Delete Config?</h2>
+            <p>This will permanently remove the WhatsApp routing config for this service number. The current batch state
+                will also be lost.</p>
+            <input type="hidden" id="deleteId" />
+            <div class="modal-footer">
+                <button type="button" class="btn btn-ghost" id="cancelDeleteBtn">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./assets/js/whatsapp.js"></script>
+</body>
+
+</html>
