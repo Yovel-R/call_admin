@@ -483,7 +483,8 @@ tr:hover td {
   margin-bottom: 6px;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
   width: 100%;
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -496,7 +497,19 @@ tr:hover td {
   transition: border-color .2s, box-shadow .2s;
 }
 
-.form-group input:focus {
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.form-group input:focus,
+.form-group select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px rgba(79, 70, 229, .12);
 }
@@ -651,7 +664,9 @@ tr:hover td {
   to {
     transform: rotate(360deg);
   }
-}/* ── Responsive Design ─────────────────────────────────────────────────── */
+}
+
+/* ── Responsive Design ─────────────────────────────────────────────────── */
 @media (max-width: 992px) {
   .app-shell {
     flex-direction: column;
@@ -678,7 +693,7 @@ tr:hover td {
   .sidebar-logo-text {
     display: none;
   }
-  
+
   .sidebar-logo-sub {
     display: none;
   }
@@ -697,46 +712,46 @@ tr:hover td {
   .sidebar-user {
     padding: 0;
     border-top: none;
-    display: none; 
+    display: none;
   }
 
   /* Mobile bottom nav style instead of top */
   @media (max-width: 768px) {
     .app-shell {
-       padding-bottom: 60px;
+      padding-bottom: 60px;
     }
-    
+
     .sidebar {
-       position: fixed;
-       bottom: 0;
-       top: auto;
-       width: 100%;
-       background: var(--white);
-       border-top: 1px solid var(--border);
-       border-bottom: none;
-       padding: 8px 16px;
-       justify-content: center;
-       z-index: 50;
+      position: fixed;
+      bottom: 0;
+      top: auto;
+      width: 100%;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      border-bottom: none;
+      padding: 8px 16px;
+      justify-content: center;
+      z-index: 50;
     }
-    
+
     .sidebar-logo {
-       display: none;
+      display: none;
     }
-    
+
     .sidebar-nav {
-       width: 100%;
-       justify-content: space-around;
+      width: 100%;
+      justify-content: space-around;
     }
-    
+
     .nav-item {
-       flex-direction: column;
-       gap: 4px;
-       font-size: 11px;
-       padding: 8px;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 11px;
+      padding: 8px;
     }
-    
+
     .nav-item .nav-icon {
-       font-size: 20px;
+      font-size: 20px;
     }
   }
 }
@@ -771,21 +786,26 @@ tr:hover td {
   }
 
   /* Responsive table */
-  table, thead, tbody, th, td, tr {
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
     display: block;
   }
-  
+
   thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
   }
-  
+
   tr {
     border-bottom: 1px solid var(--border);
     padding: 12px 0;
   }
-  
+
   td {
     border: none;
     position: relative;
@@ -795,7 +815,7 @@ tr:hover td {
     justify-content: flex-end;
     text-align: right;
   }
-  
+
   td::before {
     content: attr(data-label);
     position: absolute;
@@ -822,8 +842,8 @@ tr:hover td {
   .dashboard-stats {
     grid-template-columns: 1fr;
   }
-  
-  .table-header-right select, 
+
+  .table-header-right select,
   .table-header-right button {
     width: 100%;
   }
